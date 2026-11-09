@@ -1,0 +1,4 @@
+- [ ] Build the Hausy homepage with brand styling and clear service offerings.
+- [ ] Add a prominent discovery-call invitation and validated project inquiry form.
+- [ ] Store inquiries securely in Lovable Cloud and verify a complete submission.
+- [ ] Check mobile and desktop rendering, metadata, and build diagnostics.
