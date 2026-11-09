@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794225655061,
+      "tag": "0000_create_project_inquiries",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794225724383,
+      "tag": "0001_add_inquiry_booking_details",
+      "breakpoints": true
+    }
+  ]
+}
