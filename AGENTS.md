@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+## Application architecture
+
+- Keep the public marketing homepage in `src/routes/index.tsx`, validate inquiry payloads with a shared Zod schema, and persist public submissions only through server functions backed by least-privilege Cloud access.
