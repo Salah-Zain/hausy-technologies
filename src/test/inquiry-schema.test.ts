@@ -33,4 +33,18 @@ describe("project inquiry validation", () => {
       expect(result.error.issues.map((issue) => issue.path[0])).toEqual(["email", "goals"]);
     }
   });
+
+  it("rejects a budget choice that is not in the inquiry form options", () => {
+    const result = inquirySchema.safeParse({
+      name: "Sam Taylor",
+      email: "sam@example.com",
+      company: "Example Works",
+      service: "AI automation",
+      budget: "unlimited",
+      goals: "We want to automate order updates for our growing customer team.",
+      inquiryType: "project",
+    });
+
+    expect(result.success).toBe(false);
+  });
 });
