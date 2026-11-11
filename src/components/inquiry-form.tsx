@@ -41,6 +41,7 @@ const initialValues: InquiryFormValues = {
 
 export function InquiryForm({ inquiryType = "project", compact = false }: InquiryFormProps) {
   const sendInquiry = useServerFn(submitInquiry);
+  const fieldId = (field: string) => `${inquiryType}-${field}`;
   const [values, setValues] = useState<InquiryFormValues>({ ...initialValues, inquiryType });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -62,7 +63,7 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
         if (typeof field === "string" && !nextErrors[field]) nextErrors[field] = issue.message;
       }
       setErrors(nextErrors);
-      document.getElementById(Object.keys(nextErrors)[0] ?? "inquiry-name")?.focus();
+      document.getElementById(fieldId(Object.keys(nextErrors)[0] ?? "name"))?.focus();
       return;
     }
 
@@ -92,35 +93,35 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
   return (
     <form className={`inquiry-form${compact ? " inquiry-form-compact" : ""}`} onSubmit={handleSubmit} noValidate>
       <div className="form-grid">
-        <Field label="YOUR NAME" id="inquiry-name" error={errors.name}>
-          <input id="inquiry-name" name="name" autoComplete="name" value={values.name} onChange={(event) => updateField("name", event.target.value)} maxLength={100} placeholder="How should we address you?" aria-invalid={Boolean(errors["name"])} />
+        <Field label="YOUR NAME" id={fieldId("name")} error={errors["name"]}>
+          <input id={fieldId("name")} name="name" autoComplete="name" value={values.name} onChange={(event) => updateField("name", event.target.value)} maxLength={100} placeholder="How should we address you?" aria-invalid={Boolean(errors["name"])} />
         </Field>
-        <Field label="WORK EMAIL" id="inquiry-email" error={errors.email}>
-          <input id="inquiry-email" name="email" type="email" inputMode="email" autoComplete="email" value={values.email} onChange={(event) => updateField("email", event.target.value)} maxLength={254} placeholder="you@company.com" aria-invalid={Boolean(errors["email"])} />
+        <Field label="WORK EMAIL" id={fieldId("email")} error={errors["email"]}>
+          <input id={fieldId("email")} name="email" type="email" inputMode="email" autoComplete="email" value={values.email} onChange={(event) => updateField("email", event.target.value)} maxLength={254} placeholder="you@company.com" aria-invalid={Boolean(errors["email"])} />
         </Field>
-        <Field label="COMPANY" id="inquiry-company" error={errors.company}>
-          <input id="inquiry-company" name="company" autoComplete="organization" value={values.company} onChange={(event) => updateField("company", event.target.value)} maxLength={120} placeholder="Your business name" aria-invalid={Boolean(errors["company"])} />
+        <Field label="COMPANY" id={fieldId("company")} error={errors["company"]}>
+          <input id={fieldId("company")} name="company" autoComplete="organization" value={values.company} onChange={(event) => updateField("company", event.target.value)} maxLength={120} placeholder="Your business name" aria-invalid={Boolean(errors["company"])} />
         </Field>
-        <Field label="PHONE (OPTIONAL)" id="inquiry-phone" error={errors.phone}>
-          <input id="inquiry-phone" name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={(event) => updateField("phone", event.target.value)} maxLength={30} placeholder="+91 00000 00000" aria-invalid={Boolean(errors["phone"])} />
+        <Field label="PHONE (OPTIONAL)" id={fieldId("phone")} error={errors["phone"]}>
+          <input id={fieldId("phone")} name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={(event) => updateField("phone", event.target.value)} maxLength={30} placeholder="+91 00000 00000" aria-invalid={Boolean(errors["phone"])} />
         </Field>
-        <Field label="WHAT ARE YOU LOOKING TO BUILD?" id="inquiry-service" error={errors.service}>
-          <select id="inquiry-service" name="service" value={values.service} onChange={(event) => updateField("service", event.target.value as InquiryFormValues["service"])} aria-invalid={Boolean(errors["service"])}>
+        <Field label="WHAT ARE YOU LOOKING TO BUILD?" id={fieldId("service")} error={errors["service"]}>
+          <select id={fieldId("service")} name="service" value={values.service} onChange={(event) => updateField("service", event.target.value as InquiryFormValues["service"])} aria-invalid={Boolean(errors["service"])}>
             {services.map((service) => <option key={service} value={service}>{service}</option>)}
           </select>
         </Field>
-        <Field label="PROJECT BUDGET" id="inquiry-budget" error={errors.budget}>
-          <select id="inquiry-budget" name="budget" value={values.budget} onChange={(event) => updateField("budget", event.target.value as InquiryFormValues["budget"])} aria-invalid={Boolean(errors["budget"])}>
+        <Field label="PROJECT BUDGET" id={fieldId("budget")} error={errors["budget"]}>
+          <select id={fieldId("budget")} name="budget" value={values.budget} onChange={(event) => updateField("budget", event.target.value as InquiryFormValues["budget"])} aria-invalid={Boolean(errors["budget"])}>
             {budgets.map((budget) => <option key={budget} value={budget}>{budget}</option>)}
           </select>
         </Field>
         {inquiryType === "discovery-call" && (
-          <Field label="A GOOD TIME TO REACH YOU" id="inquiry-time" error={errors.preferredTime}>
-          <input id="inquiry-time" name="preferredTime" value={values.preferredTime} onChange={(event) => updateField("preferredTime", event.target.value)} maxLength={160} placeholder="e.g. weekday afternoons" aria-invalid={Boolean(errors["preferredTime"])} />
+          <Field label="A GOOD TIME TO REACH YOU" id={fieldId("time")} error={errors["preferredTime"]}>
+          <input id={fieldId("time")} name="preferredTime" value={values.preferredTime} onChange={(event) => updateField("preferredTime", event.target.value)} maxLength={160} placeholder="e.g. weekday afternoons" aria-invalid={Boolean(errors["preferredTime"])} />
           </Field>
         )}
-        <Field label="WHAT WOULD A GREAT OUTCOME LOOK LIKE?" id="inquiry-goals" error={errors.goals} wide>
-          <textarea id="inquiry-goals" name="goals" rows={4} value={values.goals} onChange={(event) => updateField("goals", event.target.value)} maxLength={2000} minLength={20} placeholder="Tell us what’s slowing your business down or what you want to make possible." aria-invalid={Boolean(errors["goals"])} />
+        <Field label="WHAT WOULD A GREAT OUTCOME LOOK LIKE?" id={fieldId("goals")} error={errors["goals"]} wide>
+          <textarea id={fieldId("goals")} name="goals" rows={4} value={values.goals} onChange={(event) => updateField("goals", event.target.value)} maxLength={2000} minLength={20} placeholder="Tell us what’s slowing your business down or what you want to make possible." aria-invalid={Boolean(errors["goals"])} />
         </Field>
       </div>
       {requestError && <p className="form-request-error" role="alert">{requestError}</p>}
