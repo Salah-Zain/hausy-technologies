@@ -2,6 +2,15 @@ import { describe, expect, it } from "vitest";
 import { inquirySchema } from "@/lib/inquiry-schema";
 
 describe("project inquiry validation", () => {
+  it("accepts values read directly from a submitted form", () => {
+    const formValues = Object.fromEntries(new FormData(Object.assign(document.createElement("form"), {
+      innerHTML: '<input name="name" value="Sam Taylor"><input name="email" value="sam@example.com"><input name="company" value="Example Works"><select name="service"><option selected>AI automation</option></select><select name="budget"><option selected>Let’s discuss</option></select><textarea name="goals">We want to automate order updates for our growing customer team.</textarea>',
+    })).entries());
+    const result = inquirySchema.safeParse({ ...formValues, inquiryType: "project" });
+
+    expect(result.success).toBe(true);
+  });
+
   it("accepts a complete project inquiry with a valid budget and contact email", () => {
     const result = inquirySchema.safeParse({
       name: "Sam Taylor",
