@@ -30,4 +30,4 @@ use the editor.
 <!-- LOVABLE:END -->
 ## Application architecture
 
-- Keep the public marketing homepage in `src/routes/index.tsx`, validate inquiry payloads with a shared Zod schema, and persist public submissions only through server functions backed by least-privilege Cloud access.
+- Keep the public marketing homepage in `src/routes/index.tsx`; validate and persist inquiries through shared Zod schemas and Cloud server functions, and keep AI Gateway recommendations in server functions to protect credentials.

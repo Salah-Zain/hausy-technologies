@@ -3,19 +3,24 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  BadgeCheck,
   Bot,
   BrainCircuit,
   Check,
   Code2,
+  LoaderCircle,
   Layers3,
   MoveRight,
   Search,
   Workflow,
 } from "lucide-react";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import studioImage from "@/assets/hausy-studio.jpg";
 import wordmarkImage from "@/assets/hausy-wordmark.png";
 import { Button } from "@/components/ui/button";
 import { InquiryForm } from "@/components/inquiry-form";
+import { findBusinessSolutions } from "@/lib/solution-finder.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,6 +53,8 @@ function Index() {
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#services">SERVICES</a>
+          <a href="#solutions">SOLUTION FINDER</a>
+          <a href="#work">EXAMPLES</a>
           <a href="#approach">HOW WE WORK</a>
           <a href="#discovery">DISCOVERY CALL</a>
         </nav>
@@ -90,6 +97,25 @@ function Index() {
           <ServiceItem index="03" title="E-COMMERCE" description="Online stores and buying journeys made easy for your customers and your team." icon={<Layers3 aria-hidden="true" />} />
           <ServiceItem index="04" title="AI SEO" description="Helpful search and AI visibility that makes it easier for the right people to find you." icon={<Search aria-hidden="true" />} />
         </div>
+      </section>
+
+      <SolutionFinder />
+
+      <section id="work" className="work-section section-pad">
+        <div className="section-heading-row">
+          <div>
+            <span className="eyebrow">POSSIBLE IN PRACTICE</span>
+            <h2>FOUR CHALLENGES.<br />FOUR WAYS <span>FORWARD.</span></h2>
+          </div>
+          <p className="section-intro">Illustrative project scenarios showing the kind of work Hausy can shape around your business.</p>
+        </div>
+        <div className="case-grid">
+          <CaseStudyCard number="01" service="AI AUTOMATION" title="ORDERS THAT KEEP MOVING" challenge="A growing team spends too much time answering repeat order questions." approach="Connect order updates and support workflows so routine requests get handled sooner." icon={<Workflow aria-hidden="true" />} />
+          <CaseStudyCard number="02" service="CUSTOM SOFTWARE" title="ONE CLEAR VIEW OF THE WORK" challenge="Important project details live across sheets, messages and disconnected tools." approach="Bring the essential workflow into a focused tool shaped for the team’s day-to-day." icon={<Code2 aria-hidden="true" />} />
+          <CaseStudyCard number="03" service="E-COMMERCE" title="A STORE THAT FEELS SIMPLE" challenge="Customers have trouble finding the right product and finishing checkout." approach="Create a clearer buying journey with a storefront and operations flow that fit." icon={<Layers3 aria-hidden="true" />} />
+          <CaseStudyCard number="04" service="AI SEO" title="BE EASIER TO FIND" challenge="Useful expertise is hard to discover in search and AI-powered answers." approach="Build a practical content and technical foundation around what customers ask." icon={<Search aria-hidden="true" />} />
+        </div>
+        <p className="case-disclaimer"><BadgeCheck aria-hidden="true" /> Illustrative scenarios, not client case studies or measured results.</p>
       </section>
 
       <section id="approach" className="approach-section">
@@ -154,6 +180,88 @@ function Index() {
         <small>© 2026 HAUSY SYSTEM TECHNOLOGIES</small>
       </footer>
     </main>
+  );
+}
+
+function SolutionFinder() {
+  const recommend = useServerFn(findBusinessSolutions);
+  const [challenge, setChallenge] = useState("");
+  const [solution, setSolution] = useState<Awaited<ReturnType<typeof findBusinessSolutions>> | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+    setError("");
+    setSolution(null);
+    try {
+      setSolution(await recommend({ data: { challenge } }));
+    } catch {
+      setError("We couldn’t create recommendations just now. Your description is still here—please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section id="solutions" className="solution-section section-pad">
+      <div className="solution-intro">
+        <span className="eyebrow"><span className="signal-dot" /> START WITH THE CHALLENGE</span>
+        <h2>WHAT’S GETTING<br />IN YOUR <span>WAY?</span></h2>
+        <p>Describe the work that’s harder than it should be. Get a few practical directions from Hausy’s AI advisor.</p>
+        <a className="solution-text-link" href="#discovery">Rather talk it through? Book a discovery call <ArrowRight aria-hidden="true" /></a>
+      </div>
+      <div className="solution-tool">
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="business-challenge">WHAT WOULD YOU LIKE TO IMPROVE?</label>
+          <textarea
+            id="business-challenge"
+            value={challenge}
+            onChange={(event) => setChallenge(event.currentTarget.value)}
+            minLength={20}
+            maxLength={1200}
+            required
+            placeholder="For example: our team spends hours each week moving order details between tools and answering the same customer questions."
+          />
+          <div className="solution-form-footer">
+            <span>{challenge.length}/1,200</span>
+            <Button type="submit" className="button-lime" disabled={loading || challenge.trim().length < 20}>
+              {loading ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : null}
+              {loading ? "THINKING IT THROUGH" : "FIND A WAY FORWARD"}
+              {!loading && <ArrowRight aria-hidden="true" />}
+            </Button>
+          </div>
+        </form>
+        {error && <p className="solution-error" role="alert">{error}</p>}
+        {solution && (
+          <div className="solution-results" aria-live="polite">
+            <span className="eyebrow">A FEW DIRECTIONS TO EXPLORE</span>
+            <p className="solution-summary">{solution.summary}</p>
+            {solution.recommendations.map((item) => (
+              <article className="solution-result" key={item.service}>
+                <div className="solution-result-top"><h3>{item.service}</h3><ArrowUpRight aria-hidden="true" /></div>
+                <p>{item.fit}</p>
+                <span>FIRST STEP</span>
+                <p className="solution-first-step">{item.firstStep}</p>
+              </article>
+            ))}
+            <a className="solution-text-link" href="#discovery">Explore this with Hausy <ArrowRight aria-hidden="true" /></a>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function CaseStudyCard({ number, service, title, challenge, approach, icon }: { number: string; service: string; title: string; challenge: string; approach: string; icon: React.ReactNode }) {
+  return (
+    <article className="case-study">
+      <div className="case-meta"><span>{number} / {service}</span><span className="case-icon">{icon}</span></div>
+      <h3>{title}</h3>
+      <div className="case-copy"><span>THE CHALLENGE</span><p>{challenge}</p></div>
+      <div className="case-copy"><span>A POSSIBLE APPROACH</span><p>{approach}</p></div>
+    </article>
   );
 }
 
