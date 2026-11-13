@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateResponse } from "@lovable.dev/ai-gateway";
 import { z } from "zod";
 
-const challengeSchema = z.object({
+export const challengeSchema = z.object({
   challenge: z.string().trim().min(20, "Please add a little more detail.").max(1200, "Keep your description under 1,200 characters."),
 });
 
