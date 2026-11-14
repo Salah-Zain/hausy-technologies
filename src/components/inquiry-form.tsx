@@ -91,7 +91,7 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
     <form className={`inquiry-form${compact ? " inquiry-form-compact" : ""}`} onSubmit={handleSubmit} noValidate>
       <div className="form-grid">
         <Field label="YOUR NAME" id={fieldId("name")} error={errors["name"]}>
-          <input id={fieldId("name")} name="name" autoComplete="name" defaultValue={initialValues.name} onChange={(event) => setErrors((current) => ({ ...current, name: event.currentTarget.value ? "" : current["name"] ?? "" }))} maxLength={100} placeholder="How should we address you?" aria-invalid={Boolean(errors["name"])} />
+          <input id={fieldId("name")} name="name" autoComplete="name" defaultValue={initialValues.name} onChange={() => setErrors((current) => ({ ...current, name: "" }))} maxLength={100} placeholder="How should we address you?" aria-invalid={Boolean(errors["name"])} />
         </Field>
         <Field label="WORK EMAIL" id={fieldId("email")} error={errors["email"]}>
           <input id={fieldId("email")} name="email" type="email" inputMode="email" autoComplete="email" defaultValue={initialValues.email} onChange={() => setErrors((current) => ({ ...current, email: "" }))} maxLength={254} placeholder="you@company.com" aria-invalid={Boolean(errors["email"])} />
