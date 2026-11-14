@@ -1,6 +1,6 @@
-- [ ] Build the Hausy homepage with brand styling and clear service offerings.
-- [ ] Add a prominent discovery-call invitation and validated project inquiry form.
-- [ ] Store inquiries securely in Lovable Cloud and verify a complete submission.
-- [ ] Check mobile and desktop rendering, metadata, and build diagnostics.
-- [ ] Add an AI Gateway solution finder for prospective clients.
-- [ ] Add representative case-study cards for all four Hausy services.
+- [x] Build the Hausy homepage with brand styling and clear service offerings.
+- [x] Add a prominent discovery-call invitation and validated project inquiry form.
+- [x] Store inquiries securely in Lovable Cloud and verify a complete submission.
+- [x] Check mobile and desktop rendering, metadata, and build diagnostics.
+- [x] Add an AI Gateway solution finder for prospective clients.
+- [x] Add illustrative case-study cards for all four Hausy services.
