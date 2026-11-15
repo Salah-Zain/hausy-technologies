@@ -13,6 +13,8 @@ import {
   Layers3,
   MoveRight,
   Radio,
+  Rocket,
+  ScanSearch,
   Search,
   ShieldCheck,
   Sparkles,
@@ -107,11 +109,13 @@ function Index() {
             height={245}
           />
         </a>
+
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#services">SERVICES</a>
           <a href="#why-hausy">WHY HAUSY</a>
           <a href="#approach">HOW WE WORK</a>
         </nav>
+
         <div className="header-actions">
           <Button asChild className="header-cta">
             <a href="#discovery">
@@ -250,19 +254,19 @@ function Index() {
             number="01"
             title="DISCOVER & DEFINE"
             text="We understand your business, identify operational challenges, and define the right solution for your needs."
-            icon={<BrainCircuit aria-hidden="true" />}
+            icon={<ScanSearch aria-hidden="true" />}
           />
           <ApproachStep
             number="02"
             title="DESIGN & DEVELOP"
             text="We design and build tailored software through focused development cycles, keeping you involved at every stage."
-            icon={<Bot aria-hidden="true" />}
+            icon={<Code2 aria-hidden="true" />}
           />
           <ApproachStep
             number="03"
             title="DEPLOY & EVOLVE"
             text="We launch your solution, help your team get started, and continuously improve as your business grows."
-            icon={<Check aria-hidden="true" />}
+            icon={<Rocket aria-hidden="true" />}
           />
         </div>
       </section>
@@ -369,19 +373,18 @@ function Index() {
       {/* 8. Footer */}
       <footer className="site-footer">
         <div className="footer-main-row">
-          <div className="footer-brand-group">
-            <a className="footer-brand" href="#home" aria-label="Back to Hausy home">
-              <img
-                className="footer-wordmark"
-                src={wordmarkImage}
-                alt="Hausy System Technologies"
-                width={775}
-                height={245}
-                loading="lazy"
-              />
-            </a>
-            <span className="footer-tagline">HOUSE OF AI SYSTEMS</span>
-          </div>
+          <a className="footer-brand" href="#home" aria-label="Back to Hausy home">
+            <img
+              className="footer-wordmark"
+              src={wordmarkImage}
+              alt="Hausy System Technologies"
+              width={775}
+              height={245}
+              loading="lazy"
+            />
+          </a>
+
+          <span className="footer-tagline">HOUSE OF AI SYSTEMS</span>
 
           <nav className="footer-nav" aria-label="Footer navigation">
             <a href="#services">SERVICES</a>
@@ -392,10 +395,6 @@ function Index() {
 
         <div className="footer-bottom-row">
           <small>© 2026 HAUSY SYSTEM TECHNOLOGIES. ALL RIGHTS RESERVED.</small>
-          <a href="#home" className="back-top" aria-label="Back to top of page">
-            <span>BACK TO TOP</span>
-            <ArrowUpRight className="btn-arrow" aria-hidden="true" />
-          </a>
         </div>
       </footer>
       <MobileBottomCta />
