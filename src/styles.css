@@ -1933,6 +1933,96 @@
 .form-request-error {
   margin-bottom: 0.7rem;
 }
+/* Custom Select for Inquiry Form - Prevents OS dropdown clipping & overflow */
+.form-custom-select-trigger {
+  width: 100% !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0.55rem 0.95rem !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: var(--brand-navy) !important;
+  font-family: var(--font-body, "Inter", sans-serif) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+.form-custom-select-trigger:focus,
+.form-custom-select-trigger[data-state="open"] {
+  border-color: var(--brand-cobalt) !important;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand-cobalt) 20%, transparent) !important;
+}
+
+.form-custom-select-trigger[aria-invalid="true"] {
+  border-color: var(--destructive) !important;
+}
+
+.form-custom-select-trigger svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--brand-cobalt) !important;
+  opacity: 0.75 !important;
+  transition: transform 0.2s ease !important;
+}
+
+.form-custom-select-trigger[data-state="open"] svg {
+  transform: rotate(180deg) !important;
+}
+
+.form-custom-select-content {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(16, 43, 99, 0.16) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 36px -4px rgba(16, 43, 99, 0.18), 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  padding: 6px !important;
+  z-index: 9999 !important;
+  width: var(--radix-select-trigger-width) !important;
+  min-width: var(--radix-select-trigger-width) !important;
+  max-width: var(--radix-select-trigger-width) !important;
+  overflow: hidden !important;
+}
+
+.form-custom-select-item {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 14px 10px 12px !important;
+  border-radius: 8px !important;
+  font-family: var(--font-body, "Inter", sans-serif) !important;
+  font-size: 13.5px !important;
+  color: var(--brand-navy) !important;
+  cursor: pointer !important;
+  outline: none !important;
+  user-select: none !important;
+  transition: background 120ms ease, color 120ms ease !important;
+}
+
+.form-custom-select-item[data-highlighted] {
+  background: #EEF3FF !important;
+  color: var(--brand-cobalt) !important;
+}
+
+.form-custom-select-item[data-state="checked"] {
+  background: #E5EEFF !important;
+  color: var(--brand-cobalt) !important;
+  font-weight: 600 !important;
+}
+
+.form-custom-select-item svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: var(--brand-cobalt) !important;
+  margin-left: auto !important;
+}
+
 
 .form-submit {
   width: 100%;
@@ -2174,6 +2264,15 @@
 
 .services-heading h2 .desktop-break {
   display: block;
+}
+
+.services-title-line {
+  display: block;
+}
+
+.services-title-highlight {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .services-heading h2 .highlight-lime {
@@ -2545,6 +2644,155 @@
   transform: translateX(4px);
 }
 
+
+/* ==========================================================================
+   PAGE PRELOADER (Hero-Matching Cobalt Background + "Breathe" Logo Animation)
+   ========================================================================== */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brand-cobalt);
+  color: #FFFFFF;
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s ease;
+  user-select: none;
+}
+
+.page-loader.loader-fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  max-width: 90vw;
+}
+
+/* Hausy Logo Breathing Animation (Inhale / Exhale Cycle) */
+.loader-mark-breathe {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: hausyBreathe 2.4s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform, filter, opacity;
+}
+
+.loader-hausy-icon {
+  width: clamp(76px, 14vw, 100px);
+  height: clamp(76px, 14vw, 100px);
+  color: #FFFFFF;
+}
+
+@keyframes hausyBreathe {
+  0% {
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 10px rgba(198, 255, 0, 0.25));
+    opacity: 0.88;
+  }
+  42% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 32px rgba(198, 255, 0, 0.75)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4));
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 30px rgba(198, 255, 0, 0.7)) drop-shadow(0 0 55px rgba(255, 255, 255, 0.35));
+    opacity: 1;
+  }
+  92% {
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 10px rgba(198, 255, 0, 0.25));
+    opacity: 0.88;
+  }
+  100% {
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 10px rgba(198, 255, 0, 0.25));
+    opacity: 0.88;
+  }
+}
+
+.loader-brand-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.8rem;
+  animation: loaderTextPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes loaderTextPulse {
+  0%, 100% {
+    opacity: 0.82;
+    transform: translateY(0);
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.loader-brand-title {
+  color: #FFFFFF;
+  font-family: var(--font-display, "Nasi", sans-serif);
+  font-size: clamp(15px, 2.8vw, 19px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.loader-kicker {
+  color: var(--brand-lime);
+  font-family: var(--font-display, "Nasi", sans-serif);
+  font-size: clamp(10px, 1.8vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Subtle Shimmer Track */
+.loader-progress-track {
+  width: clamp(130px, 24vw, 180px);
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 1.6rem;
+}
+
+.loader-progress-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, var(--brand-lime) 50%, transparent 100%);
+  border-radius: 999px;
+  animation: loaderProgressSweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes loaderProgressSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* ==========================================================================
    RESPONSIVE BREAKPOINTS (Audited for all mobile, tablet & desktop viewports)
    Placed at the bottom of stylesheet to ensure full cascade priority
@@ -2680,6 +2928,60 @@
   .why-heading h2 {
     font-size: clamp(28px, 5vw, 38px);
   }
+  /* Footer Tablet & Mobile - Vertical Stack & Centered Layout */
+  .site-footer {
+    padding: 2.2rem var(--page-gutter) 1.6rem !important;
+  }
+
+  .footer-main-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1.6rem !important;
+    padding-bottom: 1.6rem !important;
+  }
+
+  .footer-brand-group {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .footer-tagline {
+    border-left: none !important;
+    padding-left: 0 !important;
+    text-align: center !important;
+    font-size: 0.75rem !important;
+  }
+
+  .footer-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.85rem 1.6rem !important;
+    text-align: center !important;
+  }
+
+  .footer-nav a {
+    font-size: 0.72rem !important;
+  }
+
+  .footer-bottom-row {
+    flex-direction: column-reverse !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.9rem !important;
+    padding-top: 1.3rem !important;
+    text-align: center !important;
+  }
+
+  .footer-bottom-row .back-top {
+    position: static !important;
+    margin: 0 auto !important;
+  }
+
 }
 
 /* Mobile Devices (<= 680px) */
@@ -2766,6 +3068,14 @@
 
   .services-heading h2 br {
     display: none !important;
+  }
+
+  .services-title-line {
+    display: block !important;
+  }
+
+  .services-title-highlight {
+    display: inline-block !important;
   }
 
   .services-grid {

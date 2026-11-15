@@ -94,6 +94,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 function Index() {
   return (
     <main className="hausy-site">
+      <PageLoader />
       {/* 1. Header */}
       <header className="site-header">
         <a className="brand-link" href="#home" aria-label="Hausy System Technologies home">
@@ -380,10 +381,15 @@ function Index() {
           </nav>
         </div>
 
-        <div className="footer-bottom-row text-center">
+        <div className="footer-bottom-row">
           <small>© 2026 HAUSY SYSTEM TECHNOLOGIES. ALL RIGHTS RESERVED.</small>
+          <a href="#home" className="back-top" aria-label="Back to top of page">
+            <span>BACK TO TOP</span>
+            <ArrowUpRight className="btn-arrow" aria-hidden="true" />
+          </a>
         </div>
       </footer>
+      <MobileBottomCta />
     </main>
   );
 }
@@ -410,5 +416,97 @@ function ApproachStep({
       <h3>{title}</h3>
       <p>{text}</p>
     </article>
+  );
+}
+
+function MobileBottomCta() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      if (window.innerWidth > 960) {
+        if (visible) setVisible(false);
+        return;
+      }
+
+      const heroEl = document.getElementById("home");
+      const discoveryEl = document.getElementById("discovery");
+
+      if (!heroEl) return;
+
+      const heroRect = heroEl.getBoundingClientRect();
+      const pastHero = heroRect.bottom <= 60;
+
+      let atDiscovery = false;
+      if (discoveryEl) {
+        const discRect = discoveryEl.getBoundingClientRect();
+        atDiscovery = discRect.top <= window.innerHeight * 0.7 && discRect.bottom >= 0;
+      }
+
+      setVisible(pastHero && !atDiscovery);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [visible]);
+
+  return (
+    <div
+      className={`mobile-sticky-cta ${visible ? "is-visible" : ""}`}
+      aria-hidden={!visible}
+    >
+      <a href="#discovery" className="sticky-cta-btn">
+        <span>BOOK A DISCOVERY CALL</span>
+        <ArrowRight className="btn-arrow" aria-hidden="true" />
+      </a>
+    </div>
+  );
+}
+
+function PageLoader() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [removed, setRemoved] = useState(false);
+
+  useEffect(() => {
+    // 1.5s breathing presentation duration
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+      const removeTimer = setTimeout(() => {
+        setRemoved(true);
+      }, 600);
+      return () => clearTimeout(removeTimer);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (removed) return null;
+
+  return (
+    <div
+      className={`page-loader pattern-hgrid-cobalt ${isLoaded ? "loader-fade-out" : ""}`}
+      role="status"
+      aria-label="Loading Hausy System Technologies"
+      aria-live="polite"
+    >
+      <div className="loader-inner">
+        <div className="loader-mark-breathe">
+          <HausyIcon size={96} className="loader-hausy-icon" />
+        </div>
+        <div className="loader-brand-lockup">
+          <span className="loader-brand-title">HAUSY SYSTEM TECHNOLOGIES</span>
+          <span className="loader-kicker">HOUSE OF AI SYSTEMS</span>
+        </div>
+        <div className="loader-progress-track" aria-hidden="true">
+          <div className="loader-progress-bar" />
+        </div>
+      </div>
+    </div>
   );
 }

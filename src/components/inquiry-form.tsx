@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, Check, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { inquirySchema, type InquiryFormValues } from "@/lib/inquiry-schema";
 import { submitInquiry } from "@/lib/inquiry.functions";
 
@@ -38,11 +39,12 @@ export function InquiryForm({ inquiryType = "discovery-call", compact = false }:
   const [submitted, setSubmitted] = useState(false);
   const [submittedContact, setSubmittedContact] = useState("");
   const [requestError, setRequestError] = useState("");
+  const [service, setService] = useState(initialValues.service);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formValues = Object.fromEntries(new FormData(event.currentTarget).entries());
-    const parsed = inquirySchema.safeParse({ ...formValues, inquiryType });
+    const parsed = inquirySchema.safeParse({ ...formValues, service, inquiryType });
     if (!parsed.success) {
       const nextErrors: Record<string, string> = {};
       for (const issue of parsed.error.issues) {
@@ -124,19 +126,29 @@ export function InquiryForm({ inquiryType = "discovery-call", compact = false }:
         </Field>
 
         <Field label="04. WHAT DO YOU NEED HELP WITH?" id={fieldId("service")} error={errors["service"]} wide>
-          <select
-            id={fieldId("service")}
+          <Select
             name="service"
-            defaultValue={initialValues.service}
-            onChange={() => setErrors((current) => ({ ...current, service: "" }))}
-            aria-invalid={Boolean(errors["service"])}
+            value={service}
+            onValueChange={(val) => {
+              setService(val);
+              setErrors((current) => ({ ...current, service: "" }));
+            }}
           >
-            {serviceOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              id={fieldId("service")}
+              className="form-custom-select-trigger"
+              aria-invalid={Boolean(errors["service"])}
+            >
+              <SelectValue placeholder="Select what you need help with" />
+            </SelectTrigger>
+            <SelectContent className="form-custom-select-content" position="popper" sideOffset={6}>
+              {serviceOptions.map((opt) => (
+                <SelectItem key={opt} value={opt} className="form-custom-select-item">
+                  {opt}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
 
         <Field label="05. TELL US ABOUT YOUR CHALLENGE (OPTIONAL)" id={fieldId("goals")} error={errors["goals"]} wide>
