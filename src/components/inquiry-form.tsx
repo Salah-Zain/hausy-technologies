@@ -10,42 +10,33 @@ type InquiryFormProps = {
   compact?: boolean;
 };
 
-const services = [
-  "AI automation",
-  "Custom software",
-  "E-commerce",
-  "AI SEO",
-  "Not sure yet",
-];
-
-const budgets = [
-  "Under ₹50,000",
-  "₹50,000 – ₹2 lakh",
-  "₹2 lakh – ₹5 lakh",
-  "₹5 lakh – ₹10 lakh",
-  "₹10 lakh+",
-  "Let’s discuss",
+const serviceOptions = [
+  "AI Automation & Agents",
+  "Custom Software & Internal Tools",
+  "AI Integration with Existing Systems",
+  "AI SEO & Digital Visibility",
+  "Something Else / Not Sure Yet",
 ];
 
 const initialValues: InquiryFormValues = {
   name: "",
   email: "",
-  company: "",
   phone: "",
-  service: "AI automation",
-  budget: "Let’s discuss",
+  service: "AI Automation & Agents",
   goals: "",
-  inquiryType: "project",
+  company: "Not specified",
+  budget: "Let’s discuss",
+  inquiryType: "discovery-call",
   preferredTime: "",
 };
 
-export function InquiryForm({ inquiryType = "project", compact = false }: InquiryFormProps) {
+export function InquiryForm({ inquiryType = "discovery-call", compact = false }: InquiryFormProps) {
   const sendInquiry = useServerFn(submitInquiry);
   const fieldId = (field: string) => `${inquiryType}-${field}`;
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [submittedEmail, setSubmittedEmail] = useState("");
+  const [submittedContact, setSubmittedContact] = useState("");
   const [requestError, setRequestError] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -67,7 +58,7 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
     setRequestError("");
     try {
       await sendInquiry({ data: parsed.data });
-      setSubmittedEmail(parsed.data.email);
+      setSubmittedContact(parsed.data.email || parsed.data.phone || "");
       setSubmitted(true);
     } catch {
       setRequestError("We couldn’t save your request. Please try again in a moment.");
@@ -82,7 +73,7 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
         <span className="success-icon"><Check aria-hidden="true" /></span>
         <span className="eyebrow">REQUEST RECEIVED</span>
         <h3>THANKS. LET’S BUILD WHAT’S NEXT.</h3>
-        <p>Your details are with our team. We’ll be in touch at {submittedEmail}.</p>
+        <p>Your details are with our team. We’ll be in touch{submittedContact ? ` at ${submittedContact}` : " shortly"}.</p>
       </div>
     );
   }
@@ -90,44 +81,87 @@ export function InquiryForm({ inquiryType = "project", compact = false }: Inquir
   return (
     <form className={`inquiry-form${compact ? " inquiry-form-compact" : ""}`} onSubmit={handleSubmit} noValidate>
       <div className="form-grid">
-        <Field label="YOUR NAME" id={fieldId("name")} error={errors["name"]}>
-          <input id={fieldId("name")} name="name" autoComplete="name" defaultValue={initialValues.name} onChange={() => setErrors((current) => ({ ...current, name: "" }))} maxLength={100} placeholder="How should we address you?" aria-invalid={Boolean(errors["name"])} />
+        <Field label="01. YOUR NAME" id={fieldId("name")} error={errors["name"]} wide>
+          <input
+            id={fieldId("name")}
+            name="name"
+            autoComplete="name"
+            defaultValue={initialValues.name}
+            onChange={() => setErrors((current) => ({ ...current, name: "" }))}
+            maxLength={100}
+            placeholder="What should we call you?"
+            aria-invalid={Boolean(errors["name"])}
+          />
         </Field>
-        <Field label="WORK EMAIL" id={fieldId("email")} error={errors["email"]}>
-          <input id={fieldId("email")} name="email" type="email" inputMode="email" autoComplete="email" defaultValue={initialValues.email} onChange={() => setErrors((current) => ({ ...current, email: "" }))} maxLength={254} placeholder="you@company.com" aria-invalid={Boolean(errors["email"])} />
+
+        <Field label="02. EMAIL ADDRESS" id={fieldId("email")} error={errors["email"]}>
+          <input
+            id={fieldId("email")}
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            defaultValue={initialValues.email}
+            onChange={() => setErrors((current) => ({ ...current, email: "" }))}
+            maxLength={254}
+            placeholder="you@company.com"
+            aria-invalid={Boolean(errors["email"])}
+          />
         </Field>
-        <Field label="COMPANY" id={fieldId("company")} error={errors["company"]}>
-          <input id={fieldId("company")} name="company" autoComplete="organization" defaultValue={initialValues.company} onChange={() => setErrors((current) => ({ ...current, company: "" }))} maxLength={120} placeholder="Your business name" aria-invalid={Boolean(errors["company"])} />
+
+        <Field label="03. PHONE / WHATSAPP (OPTIONAL)" id={fieldId("phone")} error={errors["phone"]}>
+          <input
+            id={fieldId("phone")}
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            defaultValue={initialValues.phone}
+            onChange={() => setErrors((current) => ({ ...current, phone: "" }))}
+            maxLength={30}
+            placeholder="+91 00000 00000"
+            aria-invalid={Boolean(errors["phone"])}
+          />
         </Field>
-        <Field label="PHONE (OPTIONAL)" id={fieldId("phone")} error={errors["phone"]}>
-          <input id={fieldId("phone")} name="phone" type="tel" autoComplete="tel" defaultValue={initialValues.phone} maxLength={30} placeholder="+91 00000 00000" aria-invalid={Boolean(errors["phone"])} />
-        </Field>
-        <Field label="WHAT ARE YOU LOOKING TO BUILD?" id={fieldId("service")} error={errors["service"]}>
-          <select id={fieldId("service")} name="service" defaultValue={initialValues.service} onChange={() => setErrors((current) => ({ ...current, service: "" }))} aria-invalid={Boolean(errors["service"])}>
-            {services.map((service) => <option key={service} value={service}>{service}</option>)}
+
+        <Field label="04. WHAT DO YOU NEED HELP WITH?" id={fieldId("service")} error={errors["service"]} wide>
+          <select
+            id={fieldId("service")}
+            name="service"
+            defaultValue={initialValues.service}
+            onChange={() => setErrors((current) => ({ ...current, service: "" }))}
+            aria-invalid={Boolean(errors["service"])}
+          >
+            {serviceOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
           </select>
         </Field>
-        <Field label="PROJECT BUDGET" id={fieldId("budget")} error={errors["budget"]}>
-          <select id={fieldId("budget")} name="budget" defaultValue={initialValues.budget} onChange={() => setErrors((current) => ({ ...current, budget: "" }))} aria-invalid={Boolean(errors["budget"])}>
-            {budgets.map((budget) => <option key={budget} value={budget}>{budget}</option>)}
-          </select>
-        </Field>
-        {inquiryType === "discovery-call" && (
-          <Field label="A GOOD TIME TO REACH YOU" id={fieldId("time")} error={errors["preferredTime"]}>
-          <input id={fieldId("time")} name="preferredTime" defaultValue={initialValues.preferredTime} maxLength={160} placeholder="e.g. weekday afternoons" aria-invalid={Boolean(errors["preferredTime"])} />
-          </Field>
-        )}
-        <Field label="WHAT WOULD A GREAT OUTCOME LOOK LIKE?" id={fieldId("goals")} error={errors["goals"]} wide>
-          <textarea id={fieldId("goals")} name="goals" rows={4} defaultValue={initialValues.goals} onChange={() => setErrors((current) => ({ ...current, goals: "" }))} maxLength={2000} minLength={20} placeholder="Tell us what’s slowing your business down or what you want to make possible." aria-invalid={Boolean(errors["goals"])} />
+
+        <Field label="05. TELL US ABOUT YOUR CHALLENGE (OPTIONAL)" id={fieldId("goals")} error={errors["goals"]} wide>
+          <textarea
+            id={fieldId("goals")}
+            name="goals"
+            rows={3}
+            defaultValue={initialValues.goals}
+            onChange={() => setErrors((current) => ({ ...current, goals: "" }))}
+            maxLength={2000}
+            placeholder="What's slowing your business down? What are you trying to build, improve, or automate?"
+            aria-invalid={Boolean(errors["goals"])}
+          />
         </Field>
       </div>
+
       {requestError && <p className="form-request-error" role="alert">{requestError}</p>}
+
       <Button type="submit" disabled={submitting} className="button-lime form-submit">
         {submitting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : null}
-        {submitting ? "SENDING REQUEST" : inquiryType === "discovery-call" ? "REQUEST A DISCOVERY CALL" : "SEND PROJECT INQUIRY"}
-        {!submitting && <ArrowRight aria-hidden="true" />}
+        <span>{submitting ? "CONNECTING..." : "LET'S CONNECT"}</span>
+        {!submitting && <ArrowRight className="btn-arrow" aria-hidden="true" />}
       </Button>
-      <p className="form-privacy">Your details stay with Hausy. We’ll only use them to follow up about your request.</p>
+
+      <p className="form-privacy">Your details stay with Hausy. We'll only use them to follow up about your enquiry.</p>
     </form>
   );
 }
