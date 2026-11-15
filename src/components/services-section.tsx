@@ -65,7 +65,7 @@ const services: Service[] = [
 
 function ServiceCard({ service }: { service: Service }) {
   return (
-    <article className={`service-card ${service.className}`}>
+    <a href="#discovery" className={`service-card ${service.className}`}>
       <div className="card-topline">
         <span className="card-number">{service.number}</span>
         <span className="card-mark" aria-hidden="true">
@@ -85,20 +85,17 @@ function ServiceCard({ service }: { service: Service }) {
         ))}
       </ul>
 
-      <a className="card-link" href="#discovery">
-        <span>{service.action}</span>
-        <ArrowRight className="btn-arrow" aria-hidden="true" />
-      </a>
-
-      <img
-        src={service.illustration}
-        alt={service.title}
-        className={`service-art ${service.artClass}`}
-        loading="lazy"
-        width={1536}
-        height={1024}
-      />
-    </article>
+      <div className="card-art-stage">
+        <img
+          src={service.illustration}
+          alt={service.title}
+          className={`service-art ${service.artClass}`}
+          loading="lazy"
+          width={1536}
+          height={1024}
+        />
+      </div>
+    </a>
   );
 }
 

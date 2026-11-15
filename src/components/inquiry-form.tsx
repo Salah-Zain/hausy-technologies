@@ -96,7 +96,7 @@ export function InquiryForm({ inquiryType = "discovery-call", compact = false }:
           />
         </Field>
 
-        <Field label="02. EMAIL ADDRESS" id={fieldId("email")} error={errors["email"]}>
+        <Field label="02. EMAIL ADDRESS (OPTIONAL)" id={fieldId("email")} error={errors["email"]}>
           <input
             id={fieldId("email")}
             name="email"
@@ -111,7 +111,7 @@ export function InquiryForm({ inquiryType = "discovery-call", compact = false }:
           />
         </Field>
 
-        <Field label="03. PHONE / WHATSAPP (OPTIONAL)" id={fieldId("phone")} error={errors["phone"]}>
+        <Field label="03. PHONE / WHATSAPP" id={fieldId("phone")} error={errors["phone"]}>
           <input
             id={fieldId("phone")}
             name="phone"

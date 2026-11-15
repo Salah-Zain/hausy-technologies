@@ -21,7 +21,7 @@ import {
   Workflow,
   Zap,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import wordmarkImage from "@/assets/hausy-wordmark.png";
 import { Button } from "@/components/ui/button";
 import { InquiryForm } from "@/components/inquiry-form";
@@ -99,6 +99,7 @@ function Index() {
       <header className="site-header">
         <a className="brand-link" href="#home" aria-label="Hausy System Technologies home">
           <img
+            id="nav-brand-img"
             className="brand-wordmark"
             src={wordmarkImage}
             alt="Hausy System Technologies"
@@ -154,10 +155,20 @@ function Index() {
             <span className="eyebrow eyebrow-light">
               WHY HAUSY
             </span>
-            <h2 className="why-headline">
-              A BETTER WAY TO BUILD,{" "}
-              AUTOMATE &amp; GROW.
-            </h2>
+            <div className="why-title-row">
+              <h2 className="why-headline">
+                A BETTER WAY TO BUILD,{" "}
+                AUTOMATE &amp; GROW.
+              </h2>
+              <div className="why-header-cta-wrap">
+                <Button asChild className="button-lime">
+                  <a href="#discovery">
+                    <span>BOOK A DISCOVERY CALL</span>
+                    <ArrowRight className="btn-arrow" aria-hidden="true" />
+                  </a>
+                </Button>
+              </div>
+            </div>
             <p className="why-desc">
               We bring software, AI and automation together to help businesses
               work smarter, solve real challenges and move forward with confidence.
@@ -376,8 +387,6 @@ function Index() {
             <a href="#services">SERVICES</a>
             <a href="#why-hausy">WHY HAUSY</a>
             <a href="#approach">HOW WE WORK</a>
-            <a href="#faq">FAQ</a>
-            <a href="#discovery">DISCOVERY CALL</a>
           </nav>
         </div>
 
@@ -470,43 +479,120 @@ function MobileBottomCta() {
 }
 
 function PageLoader() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [removed, setRemoved] = useState(false);
+  const [isFading, setIsFading] = useState(false);
+  const [isDone, setIsDone] = useState(false);
+  const logoRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    // 1.5s breathing presentation duration
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-      const removeTimer = setTimeout(() => {
-        setRemoved(true);
-      }, 600);
-      return () => clearTimeout(removeTimer);
-    }, 1500);
+    // Disable automatic browser scroll restoration so coordinates are always accurate
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
 
-    return () => clearTimeout(timer);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Phase 1: Pure Brand Hold on solid blue for 1800ms (Website is completely hidden)
+    const flightTimer = setTimeout(() => {
+      const navImg = document.getElementById("nav-brand-img");
+      const logoEl = logoRef.current;
+
+      if (!logoEl) {
+        document.body.style.overflow = originalOverflow;
+        document.body.classList.add("page-revealed");
+        setIsDone(true);
+        return;
+      }
+
+      // Measure exact initial centered position
+      const startRect = logoEl.getBoundingClientRect();
+
+      // Measure target navbar logo position with responsive fallback
+      const navRect = navImg?.getBoundingClientRect();
+      const isMobile = window.innerWidth <= 480;
+      const targetLeft = navRect && navRect.width > 0 ? navRect.left : (isMobile ? 16 : 32);
+      const targetTop = navRect && navRect.height > 0 ? navRect.top : (isMobile ? 14 : 20);
+      const targetWidth = navRect && navRect.width > 0 ? navRect.width : (isMobile ? 140 : 200);
+
+      // Hide the static navbar logo so there is zero duplicate ghost during flight
+      if (navImg) {
+        navImg.style.opacity = "0";
+      }
+
+      // Phase 2: Logo flies into navbar position WHILE BLUE SCREEN IS 100% SOLID (700ms)
+      // The hero section and website are NOT visible yet!
+      const anim = logoEl.animate(
+        [
+          {
+            top: `${startRect.top}px`,
+            left: `${startRect.left}px`,
+            width: `${startRect.width}px`,
+            transform: "none",
+          },
+          {
+            top: `${targetTop}px`,
+            left: `${targetLeft}px`,
+            width: `${targetWidth}px`,
+            transform: "none",
+          },
+        ],
+        {
+          duration: 700,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+          fill: "forwards",
+        }
+      );
+
+      // Phase 3: The Grand Reveal (Triggered ONLY when the logo arrives in the navbar at 2500ms)
+      const startReveal = () => {
+        // 1. Reveal navbar logo
+        if (navImg) {
+          navImg.style.opacity = "1";
+        }
+        // 2. Start dissolving the solid blue backdrop
+        setIsFading(true);
+        // 3. Trigger coordinated entrance of navbar links and hero content
+        document.body.classList.add("page-revealed");
+
+        // 4. Once backdrop finishes dissolving (600ms), unmount loader and restore scroll
+        setTimeout(() => {
+          document.body.style.overflow = originalOverflow;
+          setIsDone(true);
+        }, 600);
+      };
+
+      if (anim && anim.finished) {
+        anim.finished.then(startReveal).catch(startReveal);
+      } else {
+        setTimeout(startReveal, 700);
+      }
+    }, 1800);
+
+    return () => {
+      clearTimeout(flightTimer);
+      document.body.style.overflow = originalOverflow;
+    };
   }, []);
 
-  if (removed) return null;
+  if (isDone) return null;
 
   return (
-    <div
-      className={`page-loader pattern-hgrid-cobalt ${isLoaded ? "loader-fade-out" : ""}`}
-      role="status"
-      aria-label="Loading Hausy System Technologies"
-      aria-live="polite"
-    >
-      <div className="loader-inner">
-        <div className="loader-mark-breathe">
-          <HausyIcon size={96} className="loader-hausy-icon" />
-        </div>
-        <div className="loader-brand-lockup">
-          <span className="loader-brand-title">HAUSY SYSTEM TECHNOLOGIES</span>
-          <span className="loader-kicker">HOUSE OF AI SYSTEMS</span>
-        </div>
-        <div className="loader-progress-track" aria-hidden="true">
-          <div className="loader-progress-bar" />
-        </div>
-      </div>
-    </div>
+    <>
+      <div
+        className={`page-loader-backdrop ${isFading ? "fade-out" : ""}`}
+        role="status"
+        aria-label="Loading Hausy System Technologies"
+        aria-live="polite"
+      />
+      <img
+        ref={logoRef}
+        src={wordmarkImage}
+        alt="Hausy System Technologies"
+        className="loader-flying-logo"
+        width={775}
+        height={245}
+      />
+    </>
   );
 }
